@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendas - Sistema de Estoque</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .nav h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            min-height: 200px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--primary);
+        }
+
+        .sales-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sale-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .sale-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .sale-info {
+            flex: 1;
+        }
+
+        .sale-product {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .sale-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .sale-sku {
+            font-family: monospace;
+        }
+
+        .sale-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .error,
+        .success {
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="nav">
+            <h1>📊 Sistema de Controle de Estoque</h1>
+            <div class="nav-links">
+                <a href="?page=dashboard" class="nav-link">Dashboard</a>
+                <a href="?page=products" class="nav-link">Produtos</a>
+                <a href="?page=sales" class="nav-link active">Vendas</a>
+            </div>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>🛒 Registrar Nova Venda</h2>
+            </div>
+            <div class="card-body">
+                <form id="saleForm">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="saleProduct">Produto *</label>
+                            <select id="saleProduct" class="form-control" required>
+                                <option value="">Selecione um produto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="saleQuantity">Quantidade *</label>
+                            <input type="number" id="saleQuantity" class="form-control" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div id="productInfo"
+                        style="display: none; padding: 1rem; background: var(--bg); border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border);">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">Estoque Disponível</div>
+                                <div id="availableStock"
+                                    style="font-size: 1.125rem; font-weight: 600; color: var(--text);"></div>
+                            </div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">Preço Unitário</div>
+                                <div id="unitPrice"
+                                    style="font-size: 1.125rem; font-weight: 600; color: var(--primary);"></div>
+                            </div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">Valor Total</div>
+                                <div id="totalValue"
+                                    style="font-size: 1.5rem; font-weight: 700; color: var(--success);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="saleMessage"></div>
+                    <button type="submit" class="btn btn-primary">💰 Registrar Venda</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>📅 Vendas por Período</h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <input type="date" id="filterDate" class="form-control" style="width: auto;">
+                    <button class="btn-secondary" onclick="filterByDate()">🔍 Filtrar</button>
+                    <button class="btn-secondary" onclick="loadTodaySales()">📆 Hoje</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="salesContainer">
+                    <div class="loading">Carregando vendas...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let products = [];
+        let selectedProduct = null;
+        window.onload = function () {
+            loadProducts();
+            loadTodaySales();
+            document.getElementById('saleProduct').addEventListener('change', updateProductInfo);
+            document.getElementById('saleQuantity').addEventListener('input', calculateTotal);
+        };
+        function loadProducts() {
+            callAPI('getProducts', {}, function (result) {
+                if (result.success) {
+                    products = result.products;
+                    const select = document.getElementById('saleProduct');
+                    result.products.forEach(product => {
+                        if (product.stock > 0) {
+                            const option = document.createElement('option');
+                            option.value = product.id;
+                            option.textContent = `${product.name} (${product.sku}) - Estoque: ${product.stock}`;
+                            option.dataset.product = JSON.stringify(product);
+                            select.appendChild(option);
+                        }
+                    });
+                }
+            });
+        }
+        function updateProductInfo() {
+            const select = document.getElementById('saleProduct');
+            const option = select.options[select.selectedIndex];
+            if (option.value) {
+                selectedProduct = JSON.parse(option.dataset.product);
+                document.getElementById('productInfo').style.display = 'block';
+                document.getElementById('availableStock').textContent = selectedProduct.stock + ' unidades';
+                document.getElementById('unitPrice').textContent = 'R$ ' + formatPrice(selectedProduct.price);
+                calculateTotal();
+            } else {
+                document.getElementById('productInfo').style.display = 'none';
+                selectedProduct = null;
+            }
+        }
+        function calculateTotal() {
+            if (selectedProduct) {
+                const quantity = parseInt(document.getElementById('saleQuantity').value) || 0;
+                const total = quantity * selectedProduct.price;
+                document.getElementById('totalValue').textContent = 'R$ ' + formatPrice(total);
+                const input = document.getElementById('saleQuantity');
+                if (quantity > selectedProduct.stock) {
+                    input.setCustomValidity('Quantidade maior que o estoque disponível');
+                    input.style.borderColor = 'var(--danger)';
+                } else {
+                    input.setCustomValidity('');
+                    input.style.borderColor = '';
+                }
+            }
+        }
+        document.getElementById('saleForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!selectedProduct) {
+                showSaleMessage('❌ Selecione um produto', 'error');
+                return;
+            }
+            const quantity = parseInt(document.getElementById('saleQuantity').value);
+            if (quantity > selectedProduct.stock) {
+                showSaleMessage('❌ Quantidade maior que o estoque disponível', 'error');
+                return;
+            }
+            const saleData = { productId: selectedProduct.id, quantity: quantity };
+            showSaleMessage('Registrando venda...', 'loading');
+            callAPI('addSale', { data: saleData }, function (result) {
+                if (result.success) {
+                    showSaleMessage('✅ ' + result.message, 'success');
+                    document.getElementById('saleForm').reset();
+                    document.getElementById('productInfo').style.display = 'none';
+                    selectedProduct = null;
+                    const select = document.getElementById('saleProduct');
+                    select.innerHTML = '<option value="">Selecione um produto</option>';
+                    loadProducts();
+                    loadTodaySales();
+                } else {
+                    showSaleMessage('❌ ' + result.message, 'error');
+                }
+            });
+        });
+        function loadTodaySales() {
+            const today = new Date();
+            const dateStr = formatDateForAPI(today);
+            document.getElementById('filterDate').value = formatDateForInput(today);
+            loadSalesByDate(dateStr);
+        }
+        function filterByDate() {
+            const dateInput = document.getElementById('filterDate').value;
+            if (dateInput) {
+                const date = new Date(dateInput + 'T00:00:00');
+                const dateStr = formatDateForAPI(date);
+                loadSalesByDate(dateStr);
+            }
+        }
+        function loadSalesByDate(dateStr) {
+            const container = document.getElementById('salesContainer');
+            container.innerHTML = '<div class="loading">Carregando vendas...</div>';
+            callAPI('getSalesByDate', { date: dateStr }, function (result) {
+                if (result.success) {
+                    if (result.sales.length === 0) {
+                        container.innerHTML = '<div class="empty-state">Nenhuma venda realizada nesta data</div>';
+                        return;
+                    }
+                    let totalDay = 0;
+                    let html = '<div class="sales-list">';
+                    result.sales.forEach(sale => {
+                        totalDay += sale.totalValue;
+                        html += `<div class="sale-item"><div class="sale-info"><div class="sale-product">${sale.product}</div><div class="sale-details"><span class="sale-sku">${sale.sku}</span><span class="sale-qty">${sale.quantity}x</span><span class="sale-date">${sale.date}</span></div></div><div class="sale-value">R$ ${formatPrice(sale.totalValue)}</div></div>`;
+                    });
+                    html += '</div>';
+                    html += `<div style="margin-top: 1.5rem; padding: 1.5rem; background: var(--bg); border-radius: 8px; border: 1px solid var(--primary);"><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="color: var(--text-secondary); font-size: 0.875rem;">Total de Vendas</div><div style="font-size: 1.125rem; font-weight: 600; color: var(--text);">${result.sales.length} venda(s)</div></div><div style="text-align: right;"><div style="color: var(--text-secondary); font-size: 0.875rem;">Faturamento do Dia</div><div style="font-size: 2rem; font-weight: 700; color: var(--success);">R$ ${formatPrice(totalDay)}</div></div></div></div>`;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="error">Erro ao carregar vendas</div>';
+                }
+            });
+        }
+        function showSaleMessage(message, type) {
+            const messageDiv = document.getElementById('saleMessage');
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            messageDiv.style.marginBottom = '1rem';
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.className = '';
+                }, 3000);
+            }
+        }
+        function formatPrice(value) {
+            return parseFloat(value).toFixed(2).replace('.', ',');
+        }
+        function formatDateForAPI(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        function callAPI(action, data, callback) {
+            const url = '<?= getScriptUrl() ?>';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({ action: action, ...data })
+            })
+                .then(response => response.json())
+                .then(callback)
+                .catch(error => {
+                    console.error('Erro na API:', error);
+                    showSaleMessage('❌ Erro de conexão', 'error');
+                    if (callback) callback({ success: false, message: error.message });
+                });
+        }
+    </script>
+</body>
+
+</html>
