@@ -290,9 +290,9 @@
         <nav class="nav">
             <h1>📊 Sistema de Controle de Estoque</h1>
             <div class="nav-links">
-                <a href="?page=dashboard" class="nav-link">Dashboard</a>
-                <a href="?page=products" class="nav-link">Produtos</a>
-                <a href="?page=sales" class="nav-link active">Vendas</a>
+                <a href="<?!= getScriptUrl() ?>?page=dashboard" class="nav-link">Dashboard</a>
+                <a href="<?!= getScriptUrl() ?>?page=products" class="nav-link">Produtos</a>
+                <a href="<?!= getScriptUrl() ?>?page=sales" class="nav-link active">Vendas</a>
             </div>
         </nav>
 
@@ -506,7 +506,7 @@
             return `${year}-${month}-${day}`;
         }
         function callAPI(action, data, callback) {
-            const url = '<?= getScriptUrl() ?>';
+            const url = '<?!= getScriptUrl() ?>';
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({ action: action, ...data })
